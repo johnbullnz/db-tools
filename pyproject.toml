@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "db-tools"
+version = "0.1"
+description = ""
+authors = ["John Bull <johnbullnz@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.scripts]
+db-tools = "db_tools.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+click = "^7.1.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api" 
