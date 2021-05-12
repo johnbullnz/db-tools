@@ -18,7 +18,9 @@ def cli():
 @click.option("--config-file", "config_file", required=True)
 @click.option("--backup-name", "backup_name", default="",
               help="text to be appended to the database name when generating a filename")
-def cli_dump_database(config_file, backup_name):
+@click.option("--database", "database", default="",
+              help="overrides the database name set in the config file")
+def cli_dump_database(config_file, backup_name, database):
     """Dump database to a sql file. The path used is set by the "backup_path"
     variable in the config file.
     """
@@ -27,6 +29,9 @@ def cli_dump_database(config_file, backup_name):
 
     if backup_name == "":
         backup_name = datetime.now().strftime("%Y%m%d_%H%M")
+
+    if database != "":
+        config.database = database
 
     sql_file = config.backup_path.joinpath(f"{config.database}_{backup_name}.sql")
     dump_database(config, sql_file)

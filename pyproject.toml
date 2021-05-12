@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "db-tools"
-version = "0.1"
+version = "0.2"
 description = ""
 authors = ["John Bull <johnbullnz@gmail.com>"]
 license = "MIT"
