@@ -1,9 +1,5 @@
 [GENERAL]
 username = 
 password = 
-url = 
+host = 
 port = 
-connection_string = 
-database = 
-ca_certificate_path = 
-backup_path = 
