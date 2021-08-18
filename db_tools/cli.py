@@ -1,5 +1,6 @@
 import click
 from datetime import datetime
+from pathlib import Path
 
 from captif_db_config import Config
 
@@ -30,7 +31,7 @@ def cli_dump_database(config_file, backup_name, database, backup_path):
     if backup_name == "":
         backup_name = datetime.now().strftime("%Y%m%d_%H%M")
 
-    sql_file = backup_path.joinpath(f"{database}_{backup_name}.sql")
+    sql_file = Path(backup_path).joinpath(f"{database}_{backup_name}.sql")
     dump_database(config, database, sql_file)
 
 
