@@ -78,7 +78,7 @@ def mysql_dump_command(
     ]
 
 
-def dump_database(config, path: Union[str, Path]):
+def dump_database(config, database, path: Union[str, Path]):
     """Dumps the database to a file.
     :param database: Name of the database to dumped.
     :param path: File path used store the dumped database.
@@ -86,11 +86,11 @@ def dump_database(config, path: Union[str, Path]):
     with open(path, "w") as f:
         subprocess.call(
             mysql_dump_command(
-                config.url,
-                config.port,
-                config.username,
-                config.password,
-                config.database,
+                config.HOST,
+                config.PORT,
+                config.USERNAME,
+                config.PASSWORD,
+                database,
             ), stdout=f
         )
 
@@ -127,10 +127,10 @@ def restore_database(config, database: str, sql_file: Union[str, Path]):
     :param sql_file: Path to back-up sql file
     """
     db_params = (
-        config.url,
-        config.port,
-        config.username,
-        config.password,
+        config.HOST,
+        config.PORT,
+        config.USERNAME,
+        config.PASSWORD,
     )
 
     create_database(*db_params, database)
@@ -139,24 +139,24 @@ def restore_database(config, database: str, sql_file: Union[str, Path]):
         subprocess.call(mysql_restore_command(*db_params, database), stdin=f)
 
 
-def generate_duplicate_database(config):
+def generate_duplicate_database(config, database):
     """Generates a duplicate database with '_copy' appended to the database name. The
     duplicate database can be used to test alembic migrations before they are applied to
     the production database. Connection credentials are read from the config file.
     :param database: Name of the database to duplicate.
     """
     db_params = (
-        config.url,
-        config.port,
-        config.username,
-        config.password,
+        config.HOST,
+        config.PORT,
+        config.USERNAME,
+        config.PASSWORD,
     )
 
     ps = subprocess.Popen(
-        mysql_dump_command(*db_params, config.database), stdout=subprocess.PIPE,
+        mysql_dump_command(*db_params, database), stdout=subprocess.PIPE,
     )
 
-    duplicate_database = f"{config.database}_copy"
+    duplicate_database = f"{database}_copy"
     drop_database(*db_params, duplicate_database)
     create_database(*db_params, duplicate_database)
 

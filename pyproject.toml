@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "db-tools"
-version = "0.2"
+version = "0.3"
 description = ""
 authors = ["John Bull <johnbullnz@gmail.com>"]
 license = "MIT"
@@ -11,6 +11,7 @@ db-tools = "db_tools.main:main"
 [tool.poetry.dependencies]
 python = "^3.8"
 click = "^7.1.2"
+captif-db-config = "^0.10"
 
 [tool.poetry.dev-dependencies]
 
