@@ -10,7 +10,13 @@ python3 -m pip install --user pipx
 python3 -m pipx ensurepath
 ```
 
-Clone repo and install using pipx:
+Install directly from Github:
+
+```
+ pipx install git+https://github.com/johnbullnz/db-tools.git
+```
+
+Or clone repo and install using pipx:
 
 ```
 cd /apps
