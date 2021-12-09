@@ -51,7 +51,8 @@ def call_mysql_command(url: str, port: int, username: str, password: str, cmd: s
 
 
 def mysql_dump_command(
-    url: str, port: int, username: str, password: str, database: str
+    url: str, port: int, username: str, password: str, database: str,
+    tables: List[str] = [],
 ) -> List[str]:
     """
     Generate a command to dump a database. The resulting command can be used by
@@ -60,7 +61,8 @@ def mysql_dump_command(
     :param port: Database server port number.
     :param username: Database server username.
     :param password: Database server password.
-    :param database: Name of the database to drop.
+    :param database: Name of the database.
+    :param tables: List of tables to use (optional). Defaults to all tables in the database.
     """
     return [
         "mysqldump",
@@ -75,13 +77,15 @@ def mysql_dump_command(
         "--triggers",
         "--routines",
         database,
+        *tables,
     ]
 
 
-def dump_database(config, database, path: Union[str, Path]):
+def dump_database(config, database, path: Union[str, Path], tables: List[str] = []):
     """Dumps the database to a file.
     :param database: Name of the database to dumped.
     :param path: File path used store the dumped database.
+    :param tables: List of tables to use (optional). Defaults to all tables in the database.
     """
     with open(path, "w") as f:
         subprocess.call(
@@ -91,6 +95,7 @@ def dump_database(config, database, path: Union[str, Path]):
                 config.USERNAME,
                 config.PASSWORD,
                 database,
+                tables,
             ), stdout=f
         )
 
@@ -139,11 +144,12 @@ def restore_database(config, database: str, sql_file: Union[str, Path]):
         subprocess.call(mysql_restore_command(*db_params, database), stdin=f)
 
 
-def generate_duplicate_database(config, database):
+def generate_duplicate_database(config, database, tables: List[str] = []):
     """Generates a duplicate database with '_copy' appended to the database name. The
     duplicate database can be used to test alembic migrations before they are applied to
     the production database. Connection credentials are read from the config file.
     :param database: Name of the database to duplicate.
+    :param tables: List of tables to use (optional). Defaults to all tables in the database.
     """
     db_params = (
         config.HOST,
@@ -153,7 +159,7 @@ def generate_duplicate_database(config, database):
     )
 
     ps = subprocess.Popen(
-        mysql_dump_command(*db_params, database), stdout=subprocess.PIPE,
+        mysql_dump_command(*db_params, database, tables), stdout=subprocess.PIPE,
     )
 
     duplicate_database = f"{database}_copy"

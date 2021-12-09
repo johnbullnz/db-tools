@@ -21,8 +21,9 @@ def cli():
 @click.option("--backup-name", "backup_name", default="",
               help="text to be appended to the database name when generating a filename")
 @click.argument("database", required=True)
+@click.argument("tables", nargs=-1)
 @click.argument("backup-path", required=True)
-def cli_dump_database(config_file, backup_name, database, backup_path):
+def cli_dump_database(config_file, backup_name, database, tables, backup_path):
     """Dump database to a sql file.
     """
 
@@ -32,7 +33,7 @@ def cli_dump_database(config_file, backup_name, database, backup_path):
         backup_name = datetime.now().strftime("%Y%m%d_%H%M")
 
     sql_file = Path(backup_path).joinpath(f"{database}_{backup_name}.sql")
-    dump_database(config, database, sql_file)
+    dump_database(config, database, sql_file, tables)
 
 
 @click.command(name="restore")
@@ -49,13 +50,18 @@ def cli_restore_database(config_file, database, path):
 @click.command(name="duplicate")
 @click.option("--config-file", "config_file", required=True)
 @click.argument('database', required=True)
-def cli_duplicate_database(config_file, database):
+@click.argument("tables", nargs=-1)
+def cli_duplicate_database(config_file, database, tables):
     """Generate a duplicate copy of a database with '_copy' appended to the name.
     """
     config = Config(config_file)
-    generate_duplicate_database(config, database)
+    generate_duplicate_database(config, database, tables)
 
 
 cli.add_command(cli_dump_database)
 cli.add_command(cli_restore_database)
 cli.add_command(cli_duplicate_database)
+
+
+if __name__ == '__main__':
+    cli()
