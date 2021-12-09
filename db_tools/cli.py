@@ -4,6 +4,7 @@ from pathlib import Path
 
 from captif_db_config import Config
 
+from db_tools import __version__
 from db_tools.tools import (
     generate_duplicate_database,
     dump_database,
@@ -11,6 +12,7 @@ from db_tools.tools import (
 )
 
 
+@click.version_option(__version__, prog_name="db-tools")
 @click.group()
 def cli():
     pass
