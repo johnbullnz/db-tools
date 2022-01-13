@@ -52,7 +52,7 @@ def call_mysql_command(url: str, port: int, username: str, password: str, cmd: s
 
 def mysql_dump_command(
     url: str, port: int, username: str, password: str, database: str,
-    tables: List[str] = [],
+    tables: List[str] = [], exclude: List[str] = [],
 ) -> List[str]:
     """
     Generate a command to dump a database. The resulting command can be used by
@@ -63,6 +63,7 @@ def mysql_dump_command(
     :param password: Database server password.
     :param database: Name of the database.
     :param tables: List of tables to use (optional). Defaults to all tables in the database.
+    :param exclude: List of tables to ignore (optional).
     """
     return [
         "mysqldump",
@@ -78,6 +79,7 @@ def mysql_dump_command(
         "--routines",
         database,
         *tables,
+        *[f"--ignore-table={database}.{tt}" for tt in exclude]
     ]
 
 
@@ -144,12 +146,15 @@ def restore_database(config, database: str, sql_file: Union[str, Path]):
         subprocess.call(mysql_restore_command(*db_params, database), stdin=f)
 
 
-def generate_duplicate_database(config, database, tables: List[str] = []):
+def generate_duplicate_database(
+    config, database, tables: List[str] = [], exclude: List[str] = [],
+):
     """Generates a duplicate database with '_copy' appended to the database name. The
     duplicate database can be used to test alembic migrations before they are applied to
     the production database. Connection credentials are read from the config file.
     :param database: Name of the database to duplicate.
     :param tables: List of tables to use (optional). Defaults to all tables in the database.
+    :param exclude: List of tables to ignore (optional).
     """
     db_params = (
         config.HOST,
@@ -159,7 +164,7 @@ def generate_duplicate_database(config, database, tables: List[str] = []):
     )
 
     ps = subprocess.Popen(
-        mysql_dump_command(*db_params, database, tables), stdout=subprocess.PIPE,
+        mysql_dump_command(*db_params, database, tables, exclude), stdout=subprocess.PIPE,
     )
 
     duplicate_database = f"{database}_copy"

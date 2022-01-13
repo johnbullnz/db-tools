@@ -13,7 +13,7 @@ python3 -m pipx ensurepath
 Install directly from Github:
 
 ```
- pipx install git+https://github.com/johnbullnz/db-tools.git
+pipx install git+https://github.com/johnbullnz/db-tools.git
 ```
 
 Or clone repo and install using pipx:

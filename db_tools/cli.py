@@ -53,11 +53,12 @@ def cli_restore_database(config_file, database, path):
 @click.option("--config-file", "config_file", required=True)
 @click.argument('database', required=True)
 @click.argument("tables", nargs=-1)
-def cli_duplicate_database(config_file, database, tables):
+@click.option("--exclude", multiple=True)
+def cli_duplicate_database(config_file, database, tables, exclude):
     """Generate a duplicate copy of a database with '_copy' appended to the name.
     """
     config = Config(config_file)
-    generate_duplicate_database(config, database, tables)
+    generate_duplicate_database(config, database, tables, exclude)
 
 
 cli.add_command(cli_dump_database)
